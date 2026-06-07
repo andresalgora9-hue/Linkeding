@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izertis 2026 — Andrés Algora</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --bg2: #f8fafc;
+  --bg3: #f1f5f9;
+  --border: #e2e8f0;
+  --border2: #cbd5e1;
+  --text: #0f172a;
+  --muted: #64748b;
+  --light: #94a3b8;
+  --accent: #1e40af;
+  --accent2: #3b82f6;
+  --green: #059669;
+  --green2: #d1fae5;
+  --red: #dc2626;
+  --red2: #fee2e2;
+  --amber: #d97706;
+  --amber2: #fef3c7;
+  --teal: #0891b2;
+  --teal2: #cffafe;
+  --purple: #7c3aed;
+  --purple2: #ede9fe;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.7; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 54px; background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  justify-content: space-between; padding: 0 2.5rem;
+}
+.nav-brand { font-weight: 700; font-size: 15px; color: var(--text); }
+.nav-brand span { color: var(--accent); }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a { font-size: 12px; color: var(--muted); text-decoration: none; cursor: pointer; }
+.nav-links a:hover { color: var(--text); }
+.nav-tag { font-size: 11px; font-weight: 600; background: #dbeafe; color: var(--accent); padding: 3px 10px; border-radius: 20px; }
+
+/* COVER PAGE */
+.cover {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e40af 100%);
+  display: flex; flex-direction: column;
+  justify-content: center; padding: 7rem 4rem 4rem;
+  position: relative; overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(59,130,246,0.2) 0%, transparent 60%);
+}
+.cover-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
+  color: #93c5fd; border: 1px solid rgba(147,197,253,0.3);
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 2rem;
+  width: fit-content; position: relative;
+}
+.cover-tag::before { content: ''; width: 6px; height: 6px; background: #60a5fa; border-radius: 50%; }
+h1.cover-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  color: #ffffff; font-weight: 700;
+  line-height: 1.1; margin-bottom: 1.5rem;
+  position: relative;
+}
+h1.cover-title em { color: #60a5fa; font-style: normal; }
+.cover-desc { font-size: 1.05rem; color: #94a3b8; max-width: 580px; margin-bottom: 3.5rem; position: relative; }
+
+.cover-kpis { display: flex; gap: 1.5rem; flex-wrap: wrap; position: relative; margin-bottom: 3rem; }
+.cover-kpi {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+  min-width: 150px;
+}
+.cover-kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin-bottom: 0.4rem; }
+.cover-kpi-val { font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 500; color: #fff; line-height: 1; }
+.cover-kpi-sub { font-size: 11px; margin-top: 0.3rem; }
+.g-text { color: #4ade80; }
+.r-text { color: #f87171; }
+.b-text { color: #60a5fa; }
+.a-text { color: #fbbf24; }
+.t-text { color: #22d3ee; }
+.p-text { color: #a78bfa; }
+
+.cover-meta {
+  display: flex; gap: 2.5rem; position: relative;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 1.5rem; flex-wrap: wrap;
+}
+.cover-meta-item { font-size: 12px; color: #475569; }
+.cover-meta-item strong { display: block; color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+
+/* SECTIONS */
+.section { max-width: 1060px; margin: 0 auto; padding: 5rem 2.5rem; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+
+.sec-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent2); font-weight: 500; margin-bottom: 0.4rem; display: block; }
+h2.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700; color: var(--text);
+  line-height: 1.2; margin-bottom: 0.6rem;
+}
+.sec-lead { font-size: 15px; color: var(--muted); max-width: 640px; line-height: 1.8; margin-bottom: 2rem; }
+p { color: var(--muted); margin-bottom: 0.9rem; line-height: 1.75; }
+h3 { font-size: 14px; font-weight: 600; color: var(--text); margin: 2rem 0 0.75rem; }
+
+/* GRIDS */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
+@media(max-width:860px) { .g3,.g4 { grid-template-columns: 1fr 1fr; } }
+@media(max-width:600px) { .g2,.g3,.g4 { grid-template-columns: 1fr; } }
+
+/* CARDS */
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+.card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.5rem; }
+.card-val { font-family: 'JetBrains Mono', monospace; font-size: 1.7rem; font-weight: 500; line-height: 1; }
+.card-sub { font-size: 12px; color: var(--muted); margin-top: 0.3rem; }
+
+/* METRIC STRIP */
+.metric-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
+.metric-item { background: var(--bg); padding: 1.1rem 1.25rem; }
+.metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.4rem; }
+.metric-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 600; line-height: 1; }
+.metric-delta { font-size: 11px; margin-top: 0.3rem; }
+.up { color: var(--green); }
+.dn { color: var(--red); }
+.neu { color: var(--muted); }
+
+/* TABLE */
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1rem 0; }
+th { text-align: left; padding: 0.55rem 0.9rem; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); border-bottom: 2px solid var(--border2); background: var(--bg2); }
+td { padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border); color: var(--muted); }
+tr:hover td { background: var(--bg2); }
+td.hl { color: var(--text); font-weight: 500; }
+td.mono { font-family: 'JetBrains Mono', monospace; text-align: right; font-size: 12px; }
+td.up { color: var(--green); font-family: 'JetBrains Mono', monospace; text-align: right; font-size: 12px; }
+td.dn { color: var(--red); font-family: 'JetBrains Mono', monospace; text-align: right; font-size: 12px; }
+
+/* CALLOUTS */
+.callout { border-left: 3px solid; border-radius: 0 8px 8px 0; padding: 1.1rem 1.4rem; margin: 1.25rem 0; }
+.callout p { margin: 0; font-size: 13px; line-height: 1.75; }
+.callout-green { border-color: var(--green); background: var(--green2); }
+.callout-green p { color: #065f46; }
+.callout-red { border-color: var(--red); background: var(--red2); }
+.callout-red p { color: #7f1d1d; }
+.callout-amber { border-color: var(--amber); background: var(--amber2); }
+.callout-amber p { color: #78350f; }
+.callout-blue { border-color: var(--accent2); background: #dbeafe; }
+.callout-blue p { color: #1e3a8a; }
+.callout-teal { border-color: var(--teal); background: var(--teal2); }
+.callout-teal p { color: #164e63; }
+.callout-purple { border-color: var(--purple); background: var(--purple2); }
+.callout-purple p { color: #4c1d95; }
+
+/* CHART BOX */
+.chart-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; margin: 1.25rem 0; }
+.chart-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 0.3rem; }
+.chart-sub { font-size: 11px; color: var(--muted); margin-bottom: 1rem; }
+
+/* TIMELINE */
+.timeline { border-left: 2px solid var(--border2); padding-left: 1.75rem; margin: 1.5rem 0; }
+.tl-item { position: relative; margin-bottom: 1.5rem; }
+.tl-item::before { content: ''; position: absolute; left: -2.35rem; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent2); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--accent2); }
+.tl-date { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
+.tl-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 0.3rem; }
+.tl-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* TAG */
+.tag { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; padding: 2px 8px; border-radius: 4px; margin-bottom: 0.4rem; }
+.tag-green { background: var(--green2); color: #065f46; }
+.tag-blue { background: #dbeafe; color: #1e3a8a; }
+.tag-amber { background: var(--amber2); color: #78350f; }
+.tag-red { background: var(--red2); color: #7f1d1d; }
+.tag-purple { background: var(--purple2); color: #4c1d95; }
+.tag-teal { background: var(--teal2); color: #164e63; }
+
+/* HORIZON CARDS */
+.horizon-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin: 1.5rem 0; }
+@media(max-width:860px) { .horizon-grid { grid-template-columns: 1fr; } }
+.hcard { border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; background: var(--bg); }
+.hcard.cp { border-top: 3px solid var(--amber); }
+.hcard.mp { border-top: 3px solid var(--accent2); }
+.hcard.lp { border-top: 3px solid var(--green); }
+.hcard-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; }
+.hcard.cp .hcard-tag { color: var(--amber); }
+.hcard.mp .hcard-tag { color: var(--accent2); }
+.hcard.lp .hcard-tag { color: var(--green); }
+.hcard-verdict { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.75rem; }
+.hcard-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.hcard-list { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.hcard-item { font-size: 12px; color: var(--muted); padding: 0.3rem 0; display: flex; gap: 8px; }
+.hcard-item::before { content: '→'; color: var(--light); flex-shrink: 0; }
+
+/* RANGE */
+.range-wrap { margin: 1rem 0; }
+.range-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 0.3rem; }
+.range-row strong { color: var(--text); }
+.range-track { height: 6px; background: var(--bg3); border-radius: 3px; position: relative; overflow: visible; }
+.range-fill { height: 100%; border-radius: 3px; }
+.range-dot { position: absolute; top: -3px; width: 12px; height: 12px; border-radius: 50%; background: var(--amber); border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transform: translateX(-50%); }
+
+/* BROKER CARDS */
+.broker-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin: 1.25rem 0; }
+@media(max-width:700px) { .broker-grid { grid-template-columns: 1fr; } }
+.broker-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+.broker-name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.4rem; }
+.broker-price { font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 600; color: var(--green); }
+.broker-rec { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: var(--green2); color: #065f46; margin-top: 0.3rem; }
+.broker-upside { font-size: 12px; color: var(--muted); margin-top: 0.5rem; }
+.broker-upside strong { color: var(--green); }
+
+/* CONCLUSION BOX */
+.conclusion {
+  background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+  border: 1px solid #bfdbfe; border-radius: 14px;
+  padding: 2.5rem; margin: 2rem 0;
+}
+.conclusion-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); font-weight: 700; margin-bottom: 1rem; }
+.conclusion p { color: #374151; font-size: 15px; line-height: 1.85; margin: 0; }
+.conclusion p + p { margin-top: 1rem; }
+
+/* NEW SECTION: DEEP ANALYSIS */
+.deep-box {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 4px solid var(--amber);
+  border-radius: 0 10px 10px 0;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.deep-box-title { font-size: 13px; font-weight: 700; color: #92400e; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
+.deep-box-title span { font-size: 16px; }
+.deep-box p { color: #78350f; font-size: 13px; margin: 0; line-height: 1.75; }
+
+/* FCF BOX */
+.fcf-box {
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-left: 4px solid var(--purple);
+  border-radius: 0 10px 10px 0;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.fcf-box-title { font-size: 13px; font-weight: 700; color: #4c1d95; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
+.fcf-box-title span { font-size: 16px; }
+.fcf-box p { color: #5b21b6; font-size: 13px; margin: 0; line-height: 1.75; }
+
+/* RATING BOX */
+.rating-box {
+  background: #ecfeff;
+  border: 1px solid #a5f3fc;
+  border-left: 4px solid var(--teal);
+  border-radius: 0 10px 10px 0;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.rating-box-title { font-size: 13px; font-weight: 700; color: #164e63; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
+.rating-box-title span { font-size: 16px; }
+.rating-box p { color: #0e7490; font-size: 13px; margin: 0; line-height: 1.75; }
+
+/* ITEMS LIST */
+.item-list { list-style: none; padding: 0; margin: 1rem 0; }
+.item-list li { display: flex; gap: 10px; padding: 0.65rem 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--muted); align-items: flex-start; }
+.item-list li:last-child { border-bottom: none; }
+.item-dot { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.dot-g { background: var(--green2); color: #065f46; }
+.dot-r { background: var(--red2); color: #7f1d1d; }
+.dot-a { background: var(--amber2); color: #78350f; }
+
+/* FOOTER */
+footer { background: var(--bg3); border-top: 1px solid var(--border); padding: 2.5rem; text-align: center; }
+footer p { font-size: 12px; color: var(--muted); margin: 0; }
+footer p + p { margin-top: 0.4rem; }
+footer strong { color: var(--text); }
+
+/* PRINT */
+@media print {
+  nav { display: none; }
+  .cover { min-height: auto; page-break-after: always; }
+  .section { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Andrés <span>Algora</span></div>
+  <div class="nav-links">
+    <a onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})">Cronología</a>
+    <a onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})">Precio</a>
+    <a onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})">M&A</a>
+    <a onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})">Análisis Profundo</a>
+    <a onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})">Valoración</a>
+    <a onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})">Horizontes</a>
+  </div>
+  <div class="nav-tag">Izertis · Junio 2026</div>
+</nav>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="cover-tag">Análisis de inversión · IZER.MC · Mercado Continuo</div>
+  <h1 class="cover-title">Izertis <em>2026</em><br>Todo lo que importa</h1>
+  <p class="cover-desc">ABO completado, dos adquisiciones nuevas, rating mejorado, JGA aprobada. Qué ha pasado en 2026 y qué significa para el inversor de corto, medio y largo plazo. Análisis honesto, sin ruido.</p>
+
+  <div class="cover-kpis">
+    <div class="cover-kpi">
+      <div class="cover-kpi-label">Precio actual</div>
+      <div class="cover-kpi-val a-text">8,78€</div>
+      <div class="cover-kpi-sub" style="color:#64748b">IZER.MC · 6 jun 2026</div>
+    </div>
+    <div class="cover-kpi">
+      <div class="cover-kpi-label">Cap. mercado</div>
+      <div class="cover-kpi-val b-text">~307M€</div>
+      <div class="cover-kpi-sub" style="color:#64748b">34,9M acciones</div>
+    </div>
+    <div class="cover-kpi">
+      <div class="cover-kpi-label">vs ABO enero</div>
+      <div class="cover-kpi-val r-text">-4,6%</div>
+      <div class="cover-kpi-sub" style="color:#64748b">ABO cerrado a 9,20€</div>
+    </div>
+    <div class="cover-kpi">
+      <div class="cover-kpi-label">PO consenso</div>
+      <div class="cover-kpi-val g-text">11,80€</div>
+      <div class="cover-kpi-sub" style="color:#64748b">Potencial +34%</div>
+    </div>
+    <div class="cover-kpi">
+      <div class="cover-kpi-label">Rating</div>
+      <div class="cover-kpi-val t-text">BB+</div>
+      <div class="cover-kpi-sub" style="color:#64748b">Perspectiva Positiva ↑</div>
+    </div>
+    <div class="cover-kpi">
+      <div class="cover-kpi-label">Adq. 2026</div>
+      <div class="cover-kpi-val p-text">2</div>
+      <div class="cover-kpi-sub" style="color:#64748b">ACKstorm + SADE</div>
+    </div>
+  </div>
+
+  <div class="cover-meta">
+    <div class="cover-meta-item"><strong>Preparado por</strong>Andrés Algora</div>
+    <div class="cover-meta-item"><strong>Fecha</strong>Junio 2026</div>
+    <div class="cover-meta-item"><strong>Fuentes</strong>Informe Anual 2025 · Renta4 · JB Capital · Alantra · EthiFinance · CNMV</div>
+    <div class="cover-meta-item"><strong>Uso</strong>Educativo · No es asesoramiento financiero</div>
+  </div>
+</section>
+
+<!-- S1: CRONOLOGÍA -->
+<section class="section" id="s1">
+  <span class="sec-num">01 / CRONOLOGÍA 2026</span>
+  <h2 class="sec-title">Todo lo que ha ocurrido,<br>en orden y con contexto</h2>
+  <p class="sec-lead">Cada evento relevante de 2026, su fecha y qué significa para el inversor que analiza la empresa.</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-date">9 Enero 2026</div>
+      <div><span class="tag tag-blue">Financiación</span></div>
+      <div class="tl-title">Nuevo programa de pagarés 2026 en el MARF — límite 30M€</div>
+      <div class="tl-body">Cuarto año consecutivo en el MARF. Izertis diversifica financiación sin depender del crédito bancario ni de nuevas ampliaciones. Primera emisión del año: 4,5M€ el 30 de enero. Esto es relevante: la empresa puede financiar M&A parcialmente vía deuda sin diluir al accionista.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">28–30 Enero 2026</div>
+      <div><span class="tag tag-green">ABO completado</span></div>
+      <div class="tl-title">54,1M€ captados · Demanda 2,3× la oferta · Precio 9,20€/acción</div>
+      <div class="tl-body">La ampliación de capital acelerada se cierra con 74M€ de demanda para 54,1M€ de oferta. Entran inversores institucionales de primer nivel. La deuda neta pro-forma cae de 65,8M€ (2,7× EBITDA) a ~12M€ (~0,5× EBITDA). El balance queda limpio para ejecutar el plan 2030.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Abril 2026 (sem. 15–18)</div>
+      <div><span class="tag tag-purple">M&A</span></div>
+      <div class="tl-title">Adquisición ACKstorm (Barcelona) + SADE (Madrid) — primeras compras del año</div>
+      <div class="tl-body">ACKstorm: cloud-native, +50 profesionales, certificaciones Google y AWS de primer nivel. SADE: Oil & Gas y petroquímica, ~4M€ de facturación anual, +15 años en el sector energético. Ambas llegan 3 meses después del ABO. El M&A está activado.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">27 Abril 2026</div>
+      <div><span class="tag tag-amber">Gobierno</span></div>
+      <div class="tl-title">Convocatoria JGA 2026 — puntos clave de capital y plan incentivos</div>
+      <div class="tl-body">Orden del día incluye ampliación por conversión de crédito de ALT06 Holding (607.071 nuevas acciones) y delegación al Consejo para emisiones de convertibles bajo art. 297.1.b). Dilución controlada pero acumulativa — a vigilar.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">28 Mayo 2026</div>
+      <div><span class="tag tag-green">JGA aprobada</span></div>
+      <div class="tl-title">Todos los puntos aprobados · Plan incentivos 2026-2030: 700.000 acciones</div>
+      <div class="tl-body">La JGA aprueba la reelección de PwC como auditor, la ampliación por conversión y el plan de incentivos a largo plazo 2026-2030 ligado a los objetivos del plan 2030. Buena señal de alineación gestión–accionistas.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">27–29 Mayo 2026</div>
+      <div><span class="tag tag-teal">Rating</span></div>
+      <div class="tl-title">EthiFinance: BB+ con perspectiva Positiva — mejora desde Estable</div>
+      <div class="tl-body">La agencia mantiene BB+ pero mejora la perspectiva. Si la empresa mantiene mejora de ratios en 2026-2027, el upgrade a BBB- (grado de inversión) podría llegar en 2027-2028. Eso abriría Izertis a fondos institucionales que solo invierten en investment grade.</div>
+    </div>
+  </div>
+</section>
+
+<!-- S2: PRECIO Y COTIZACIÓN -->
+<section class="section" id="s2">
+  <span class="sec-num">02 / PRECIO Y COTIZACIÓN</span>
+  <h2 class="sec-title">¿Dónde está el precio<br>y qué dice el mercado?</h2>
+  <p class="sec-lead">La acción cae un 15% en 2026. El negocio no ha ido a peor. Aquí está la explicación real.</p>
+
+  <div class="g2">
+    <div>
+      <div class="metric-strip">
+        <div class="metric-item">
+          <div class="metric-label">Precio actual</div>
+          <div class="metric-val" style="color:var(--amber)">8,78€</div>
+          <div class="metric-delta neu">6 junio 2026</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Mín. 52 semanas</div>
+          <div class="metric-val dn">7,88€</div>
+          <div class="metric-delta neu">Suelo técnico</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Máx. 52 semanas</div>
+          <div class="metric-val up">12,95€</div>
+          <div class="metric-delta neu">Máximo histórico</div>
+        </div>
+      </div>
+
+      <div class="range-wrap" style="margin-top:1.5rem">
+        <div class="range-row"><strong>Posición actual en rango 52 semanas</strong><span>8,78€ de un rango 7,88–12,95€</span></div>
+        <div class="range-track">
+          <div class="range-fill" style="width:100%;background:linear-gradient(90deg,#fecaca,#bbf7d0)"></div>
+          <div class="range-dot" style="left:17.7%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:0.4rem">
+          <span>7,88€ mín.</span><span style="color:var(--amber);font-weight:600">8,78€ actual (17,7% del rango)</span><span>12,95€ máx.</span>
+        </div>
+      </div>
+
+      <h3>Niveles clave de referencia</h3>
+      <table>
+        <thead><tr><th>Nivel</th><th class="mono">Precio</th><th>Qué significa</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">ABO enero 2026</td><td class="mono" style="color:var(--amber)">9,20€</td><td style="font-size:12px">Referencia institucional · Hoy están en negativo</td></tr>
+          <tr><td class="hl">Actual (6 jun)</td><td class="dn">8,78€</td><td style="font-size:12px">-4,6% desde ABO</td></tr>
+          <tr><td class="hl">Entrada Santander SC</td><td class="mono" style="color:var(--accent2)">8,00€</td><td style="font-size:12px">Gestora de referencia entró aquí al 2%</td></tr>
+          <tr><td class="hl">PO JB Capital</td><td class="up">12,10€</td><td style="font-size:12px">+38% potencial</td></tr>
+          <tr><td class="hl">PO Renta 4</td><td class="up">12,70€</td><td style="font-size:12px">+45% potencial · Sobreponderar</td></tr>
+          <tr><td class="hl">PO consenso medio</td><td class="up">11,80€</td><td style="font-size:12px">+34% potencial desde actual</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <div class="chart-box">
+        <div class="chart-title">Rendimiento relativo en 2026 (acumulado)</div>
+        <div class="chart-sub">IZER vs IBEX 35 · Enero–Junio 2026</div>
+        <div style="position:relative;height:220px">
+          <canvas id="chart-perf"></canvas>
+        </div>
+      </div>
+
+      <div class="callout callout-amber" style="margin-top:1rem">
+        <p><strong>¿Por qué baja si el negocio va bien?</strong> El sector IT europeo lleva una corrección generalizada en 2026: Nagarro -41%, EPAM -35%, Reply -31%, Globant -33%. Izertis cae un -15% YTD — aguanta mejor que sus comparables internacionales. No es una señal de deterioro del negocio; es compresión de múltiplos sectorial.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3: M&A -->
+<section class="section" id="s3">
+  <span class="sec-num">03 / M&A Y CRECIMIENTO INORGÁNICO</span>
+  <h2 class="sec-title">ACKstorm y SADE:<br>qué compran exactamente</h2>
+  <p class="sec-lead">Dos adquisiciones en abril, 3 meses después del ABO. El capital se activa rápido. Aquí el análisis de qué aporta cada compra al negocio.</p>
+
+  <div class="g2" style="margin-bottom:1.5rem">
+    <div class="card" style="border-top:3px solid var(--accent2)">
+      <div class="card-label">Adquisición 1 · Abril 2026</div>
+      <div style="font-size:1.2rem;font-weight:700;margin-bottom:1rem">ACKstorm</div>
+      <table style="margin:0">
+        <tr><td style="color:var(--muted);font-size:12px;padding:0.25rem 0;border:none">Sede</td><td style="font-size:12px;color:var(--text);text-align:right;border:none">Barcelona</td></tr>
+        <tr><td style="color:var(--muted);font-size:12px;padding:0.25rem 0;border:none">Fundada</td><td style="font-size:12px;color:var(--text);text-align:right;border:none">2002</td></tr>
+        <tr><td style="color:var(--muted);font-size:12px;padding:0.25rem 0;border:none">Profesionales</td><td style="font-size:12px;color:var(--text);text-align:right;border:none">+50</td></tr>
+        <tr><td style="color:var(--muted);font-size:12px;padding:0.25rem 0;border:none">Especialidad</td><td style="font-size:12px;color:var(--text);text-align:right;border:none">Cloud-native · AWS · Google</td></tr>
+      </table>
+      <div style="margin-top:0.9rem;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:0.9rem">
+        <strong style="color:var(--text)">Qué aporta:</strong> Certificaciones máximas con Google y AWS. Posiciona Izertis en infraestructuras cloud preparadas para IA. Refuerza expansión internacional en el segmento de mayor crecimiento del gasto tecnológico corporativo.
+      </div>
+    </div>
+    <div class="card" style="border-top:3px solid var(--amber)">
+      <div class="card-label">Adquisición 2 · Abril 2026</div>
+      <div style="font-size:1.2rem;font-weight:700;margin-bottom:1rem">SADE Consultoría</div>
+      <table style="margin:0">
+        <tr><td style="color:var(--muted);font-size:12px;padding:0.25rem 0;border:none">Sede</td><td style="font-size:12px;color:var(--text);text-align:right;border:none">Madrid</td></tr>
+        <tr><td style="color:var(--muted);font-size:12px;padding:0.25rem 0;border:none">Facturación anual</td><td style="font-size:12px;color:var(--text);text-align:right;border:none">~4M€</td></tr>
+        <tr><td style="color:var(--muted);font-size:12px;padding:0.25rem 0;border:none">Sector</td><td style="font-size:12px;color:var(--text);text-align:right;border:none">Oil & Gas · Petroquímica</td></tr>
+        <tr><td style="color:var(--muted);font-size:12px;padding:0.25rem 0;border:none">Trayectoria</td><td style="font-size:12px;color:var(--text);text-align:right;border:none">+15 años sector energético</td></tr>
+      </table>
+      <div style="margin-top:0.9rem;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:0.9rem">
+        <strong style="color:var(--text)">Qué aporta:</strong> Apertura al sector energético e infraestructuras críticas. Contratos de Oil & Gas son recurrentes, largo plazo y con alta barrera de sustitución. Posiciona Izertis en transición energética, uno de los mayores focos de inversión pública europea.
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="chart-box">
+      <div class="chart-title">Adquisiciones anuales y acumulado (2019–2026)</div>
+      <div class="chart-sub">Barras: anuales · Línea: acumulado total</div>
+      <div style="position:relative;height:220px">
+        <canvas id="chart-ma"></canvas>
+      </div>
+    </div>
+    <div>
+      <h3>Balance post-ABO y post-adquisiciones</h3>
+      <div class="g2" style="gap:0.75rem">
+        <div class="card">
+          <div class="card-label">DFN pre-ABO</div>
+          <div class="card-val dn">65,8M€</div>
+          <div class="card-sub">2,7× EBITDA · dic 2025</div>
+        </div>
+        <div class="card">
+          <div class="card-label">DFN pro-forma</div>
+          <div class="card-val up">~12M€</div>
+          <div class="card-sub">~0,5× EBITDA post-ABO</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Capacidad de fuego</div>
+          <div class="card-val" style="color:var(--accent2)">~80–100M€</div>
+          <div class="card-sub">Hasta 2,5× EBITDA</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Ingresos añadidos</div>
+          <div class="card-val" style="color:var(--purple)">~8–12M€</div>
+          <div class="card-sub">ACKstorm + SADE · parcial 2026</div>
+        </div>
+      </div>
+      <div class="callout callout-green" style="margin-top:1rem">
+        <p>En 2025, la contribución de EBITDA inorgánico (<strong>+17,5%</strong>) superó la contribución de ingresos inorgánicos (<strong>+12,9%</strong>). Las adquisiciones son margin-accretive: añaden más margen del que cuestan en ingresos. Buena señal de calidad del M&A.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4: ANÁLISIS PROFUNDO -->
+<section class="section" id="s4">
+  <span class="sec-num">04 / ANÁLISIS PROFUNDO</span>
+  <h2 class="sec-title">Tres cosas que todo inversor<br>debe vigilar en Izertis</h2>
+  <p class="sec-lead">Más allá de los titulares. Estos son los puntos críticos que determinan si la tesis de inversión se cumple o se rompe.</p>
+
+  <div class="deep-box">
+    <div class="deep-box-title"><span>⚠️</span> El riesgo de integración: el "talón de Aquiles"</div>
+    <p>Izertis compra a buen ritmo — 39 integraciones desde 2019. Pero cada adquisición tiene su propio ADN cultural: ACKstorm en Barcelona es una empresa tech con cultura startup y certificaciones de hiperescalares. SADE en Madrid viene del sector industrial y energético. Integrar ambas dentro de un grupo de 166M€ en ingresos con presencia en 25 países no es trivial.</p>
+    <p style="margin-top:0.75rem">La pregunta que hay que hacerse en cada informe semestral: <strong>¿el margen EBITDA se mantiene por encima del 14% o empieza a erosionarse?</strong> Si los costes de integración (sistemas, personas, procesos) superan las sinergias prometidas, el modelo de valor se resiente. Hasta ahora el track record es positivo — las adquisiciones han sido margin-accretive — pero es el punto más frágil de la tesis y hay que monitorizarlo con disciplina.</p>
+  </div>
+
+  <div class="fcf-box">
+    <div class="fcf-box-title"><span>🔍</span> El FCF (Free Cash Flow) es el juez final</div>
+    <p>El análisis menciona el EBITDA, pero para un inversor de largo plazo el <strong>Flujo de Caja Libre real</strong> es más importante. Con tantas adquisiciones, parte del flujo se reinvierte constantemente en earnouts, integración e infraestructura. La pregunta que el mercado acabará haciendo — y Izertis tendrá que responder — es: <strong>¿si paramos las compras mañana, cuánta caja libre genera este negocio para reducir deuda o retribuir al accionista?</strong></p>
+    <p style="margin-top:0.75rem">En 2025, el cash flow operativo fue de 29,1M€ (+186%). El capex de mantenimiento estimado es ~3-5M€. Eso daría un FCF potencial de ~24–26M€ si se frena el M&A. A la capitalización actual de ~307M€, eso implica un <strong>FCF Yield del ~8%</strong> — atractivo si se materializa. Ese será el punto de inflexión que cambie la narrativa del mercado sobre la acción.</p>
+  </div>
+
+  <div class="rating-box">
+    <div class="rating-box-title"><span>⭐</span> Rating BB+ perspectiva Positiva: la noticia más importante de 2026</div>
+    <p>Esto es, posiblemente, el hito más relevante del año para el inversor de largo plazo. La mejora de perspectiva de EthiFinance no es solo un reconocimiento de solidez financiera — es la señal de que Izertis está en la antesala del <strong>grado de inversión (BBB-)</strong>.</p>
+    <p style="margin-top:0.75rem">¿Por qué importa tanto? Porque la capacidad de Izertis para financiar sus compras mediante <strong>pagarés en el MARF o crédito bancario más barato</strong>, sin depender exclusivamente de ampliar capital, es lo que finalmente calma las críticas sobre la dilución. Si en 2027 logran el upgrade a BBB-, acceden a una base de inversores institucionales mucho mayor en renta fija — lo que reduce el coste del capital y mejora el modelo financiero de todo el plan 2030.</p>
+  </div>
+
+  <h3>Los tres escenarios de la tesis</h3>
+  <div class="chart-box">
+    <div class="chart-title">FCF potencial vs Cap. mercado en distintos escenarios</div>
+    <div class="chart-sub">Estimación FCF si se frena M&A vs capitalización actual</div>
+    <div style="position:relative;height:200px">
+      <canvas id="chart-fcf"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- S5: VALORACIÓN -->
+<section class="section" id="s5">
+  <span class="sec-num">05 / VALORACIÓN Y MÚLTIPLOS</span>
+  <h2 class="sec-title">¿Está cara o barata<br>a 8,78€?</h2>
+  <p class="sec-lead">La respuesta honesta: en PER parece cara. En EV/EBITDA forward y en FCF yield, hay argumento. Todo depende de si ejecutan el plan.</p>
+
+  <div class="g2">
+    <div>
+      <h3>Múltiplos actuales (precio ~8,78€)</h3>
+      <table>
+        <thead><tr><th>Ratio</th><th class="mono">2025</th><th class="mono">2026e</th><th class="mono">2027e</th></tr></thead>
+        <tbody>
+          <tr><td>PER</td><td class="mono">78,8×</td><td class="mono">50,8×</td><td class="up">24,4×</td></tr>
+          <tr><td class="hl">EV/EBITDA</td><td class="mono">15,4×</td><td class="up">11,6×</td><td class="up">9,6×</td></tr>
+          <tr><td>EV/Ventas</td><td class="mono">2,2×</td><td class="mono">1,7×</td><td class="mono">1,4×</td></tr>
+          <tr><td>DFN/EBITDA</td><td class="dn">2,7×</td><td class="up">~1,1×</td><td class="mono">1,7×</td></tr>
+          <tr><td class="hl" style="color:var(--purple)">FCF Yield est.</td><td class="mono" style="color:var(--purple)">—</td><td class="mono" style="color:var(--purple)">~7–8%</td><td class="mono" style="color:var(--green)">~10–12%</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-blue" style="margin-top:1rem">
+        <p><strong>Por qué el PER es engañoso aquí:</strong> Las amortizaciones de M&A (11M€ en 2025, +16% vs 2024) reducen el beneficio neto sin salir un euro de caja. El ratio relevante es el EV/EBITDA y el FCF Yield, no el PER. A 2027e, el EV/EBITDA de 9,6× ya es razonable para una empresa con CAGR del 24%.</p>
+      </div>
+    </div>
+    <div>
+      <h3>Comparativa con peers europeos (2026e)</h3>
+      <table>
+        <thead><tr><th>Empresa</th><th class="mono">EV/EBITDA</th><th class="mono">PER</th></tr></thead>
+        <tbody>
+          <tr style="background:#fffbeb"><td class="hl" style="color:var(--amber)">Izertis</td><td class="mono" style="color:var(--amber)">11,6×</td><td class="mono">50,8×</td></tr>
+          <tr><td>Nagarro (DE)</td><td class="mono">4,5×</td><td class="mono">8,1×</td></tr>
+          <tr><td>EPAM Systems (US)</td><td class="mono">5,9×</td><td class="mono">10,4×</td></tr>
+          <tr><td>Reply S.p.A. (IT)</td><td class="mono">4,6×</td><td class="mono">10,5×</td></tr>
+          <tr><td>Globant (ARG/US)</td><td class="mono">4,1×</td><td class="mono">7,0×</td></tr>
+          <tr style="background:var(--bg2)"><td class="hl">Media peers</td><td class="mono">4,5×</td><td class="mono">8,0×</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-amber" style="margin-top:1rem">
+        <p>Izertis cotiza con prima significativa sobre peers. Esa prima solo tiene sentido si el CAGR del 24% se mantiene. Si el crecimiento se frena al 10–15%, los múltiplos actuales son difíciles de justificar.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Precios objetivo de los tres brokers (junio 2026)</h3>
+  <div class="broker-grid">
+    <div class="broker-card">
+      <div class="broker-name">Renta 4 · Eduardo Imedio</div>
+      <div class="broker-price">12,70€</div>
+      <div class="broker-rec">SOBREPONDERAR</div>
+      <div class="broker-upside">Potencial: <strong>+45%</strong> vs actual · TACC ingresos 2025-30: +23,6%</div>
+    </div>
+    <div class="broker-card">
+      <div class="broker-name">JB Capital · David López</div>
+      <div class="broker-price">12,10€</div>
+      <div class="broker-rec">COMPRAR</div>
+      <div class="broker-upside">Potencial: <strong>+38%</strong> · DCF WACC 8%, crec. terminal 2%</div>
+    </div>
+    <div class="broker-card">
+      <div class="broker-name">Alantra Equities</div>
+      <div class="broker-price">~12,0€</div>
+      <div class="broker-rec">SOBREPONDERAR</div>
+      <div class="broker-upside">Potencial: <strong>~+37%</strong> · Espera M&A como catalizador en H2</div>
+    </div>
+  </div>
+
+  <div class="chart-box" style="margin-top:1.5rem">
+    <div class="chart-title">Estimaciones de ingresos y EBITDA 2025–2030</div>
+    <div class="chart-sub">Real 2025 + estimaciones broker + objetivo plan 2030</div>
+    <div style="position:relative;height:250px">
+      <canvas id="chart-est"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- S6: TRES HORIZONTES -->
+<section class="section" id="s6">
+  <span class="sec-num">06 / ANÁLISIS POR HORIZONTES</span>
+  <h2 class="sec-title">Corto, medio y largo plazo:<br>tres historias distintas</h2>
+  <p class="sec-lead">La misma empresa puede ser mala inversión a corto y excelente a largo. Aquí está la lectura honesta de cada horizonte.</p>
+
+  <div class="horizon-grid">
+    <div class="hcard cp">
+      <div class="hcard-tag">Corto plazo · 0–12 meses</div>
+      <div class="hcard-verdict">Perfil especulativo · Esperar catalizador</div>
+      <div class="hcard-body">El precio está por debajo del ABO. Los institucionales del ABO no tienen presión de venta todavía pero tampoco beneficio. Sin catalizador visible a corto, el mercado no tiene razón para revalorizarla.</div>
+      <div class="hcard-list">
+        <div class="hcard-item">Múltiplos altos: poco margen para error de ejecución</div>
+        <div class="hcard-item">Catalizador posible: anuncio nueva adquisición en UK, Portugal o EE.UU.</div>
+        <div class="hcard-item">Resultados H1 2026 (sep–oct): primer test real post-ABO</div>
+        <div class="hcard-item">Sector IT europeo en corrección: viento de cara macroeconómico</div>
+      </div>
+    </div>
+    <div class="hcard mp">
+      <div class="hcard-tag">Medio plazo · 1–3 años</div>
+      <div class="hcard-verdict">Atractivo condicional · La ejecución manda</div>
+      <div class="hcard-body">Si se ejecuta el plan 2026-2027, los múltiplos comprimen de forma natural. El EV/EBITDA 2027e de 9,6× ya es razonable. El beneficio neto debe triplicarse de 2025 a 2027 (de 3,9M€ a 13,4M€ estimado).</div>
+      <div class="hcard-list">
+        <div class="hcard-item">El FCF yield del ~10-12% en 2027e es el argumento más sólido</div>
+        <div class="hcard-item">Internacionalización: objetivo 30%+ internacional antes de 2028</div>
+        <div class="hcard-item">Margen EBITDA: hay que mantenerlo ≥14% durante la integración</div>
+        <div class="hcard-item">PO consenso 11,80€ implica +34% en horizonte 18–24 meses</div>
+      </div>
+    </div>
+    <div class="hcard lp">
+      <div class="hcard-tag">Largo plazo · 3–5 años</div>
+      <div class="hcard-verdict">Tesis sólida si ejecutan el plan 2030</div>
+      <div class="hcard-body">Si Izertis alcanza 400-500M€ en ingresos con márgenes del 13-15%, el EBITDA sería 52-75M€. A 12-15× EV/EBITDA, la cap. bursátil implícita es 600-1.100M€ vs 307M€ actuales.</div>
+      <div class="hcard-list">
+        <div class="hcard-item">CAGR +23% desde salida a bolsa en 2019: track record demostrado</div>
+        <div class="hcard-item">44 integraciones exitosas: el modelo roll-up funciona</div>
+        <div class="hcard-item">Rating BBB- posible en 2027-2028: acceso a base inversora mayor</div>
+        <div class="hcard-item">El FCF será el juez final: ¿puede generar 25-40M€/año libre en 2028?</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Qué monitorizar en H2 2026</h3>
+  <div class="g2">
+    <ul class="item-list">
+      <li><div class="item-dot dot-g">→</div>Resultados H1 2026 — septiembre/octubre 2026</li>
+      <li><div class="item-dot dot-g">→</div>Nueva adquisición anunciada — Portugal, UK, EE.UU.</li>
+      <li><div class="item-dot dot-g">→</div>Margen EBITDA H1 — ¿por encima del 14%?</li>
+    </ul>
+    <ul class="item-list">
+      <li><div class="item-dot dot-a">!</div>Coste de integración ACKstorm y SADE — señal de riesgo</li>
+      <li><div class="item-dot dot-a">!</div>Dilución acumulada (convertibles + earnouts + plan incentivos)</li>
+      <li><div class="item-dot dot-a">!</div>FCF real H1 2026 — ¿mejora respecto al 2025?</li>
+    </ul>
+  </div>
+</section>
+
+<!-- S7: RESUMEN EJECUTIVO -->
+<section class="section">
+  <span class="sec-num">07 / RESUMEN EJECUTIVO</span>
+  <h2 class="sec-title">Lo que necesitas saber<br>en 60 segundos</h2>
+
+  <div class="g3">
+    <div class="card" style="border-top:3px solid var(--green)">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--green);margin-bottom:0.75rem">✅ Positivo</div>
+      <ul class="item-list">
+        <li><div class="item-dot dot-g">1</div>Cash conversion 120,7% en 2025: genera más caja que EBITDA</li>
+        <li><div class="item-dot dot-g">2</div>ABO sobredemandado 2,3× — confianza institucional real</li>
+        <li><div class="item-dot dot-g">3</div>Rating BB+ perspectiva Positiva: en la antesala del grado inversión</li>
+        <li><div class="item-dot dot-g">4</div>M&A activado: 2 compras en Q1 post-ABO</li>
+        <li><div class="item-dot dot-g">5</div>Santander Small Caps entra al 2% — validación gestora de referencia</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--amber)">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--amber);margin-bottom:0.75rem">⚠️ A vigilar</div>
+      <ul class="item-list">
+        <li><div class="item-dot dot-a">!</div>Riesgo integración ACKstorm + SADE: culturas distintas</li>
+        <li><div class="item-dot dot-a">!</div>FCF real: ¿cuánto genera si frena las compras?</li>
+        <li><div class="item-dot dot-a">!</div>Dilución acumulada: convertibles + earnouts + incentivos</li>
+        <li><div class="item-dot dot-a">!</div>Múltiplos altos vs peers: prima de crecimiento exigente</li>
+        <li><div class="item-dot dot-a">!</div>75% ingresos en España: concentración geográfica</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--red)">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);margin-bottom:0.75rem">❌ Riesgos</div>
+      <ul class="item-list">
+        <li><div class="item-dot dot-r">!</div>Corrección sector IT europeo: viento de cara externo</li>
+        <li><div class="item-dot dot-r">!</div>Precio -15% YTD · Institucionales ABO en negativo</li>
+        <li><div class="item-dot dot-r">!</div>PER 79× en 2025: solo viable si el crecimiento no se frena</li>
+        <li><div class="item-dot dot-r">!</div>H1 2026 no publicado: aún sin confirmación de ejecución</li>
+        <li><div class="item-dot dot-r">!</div>Liquidez bursátil ~160K€/día: difícil entrar/salir en volumen</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="conclusion">
+    <div class="conclusion-label">Conclusión · Andrés Algora · Junio 2026</div>
+    <p>Izertis ha hecho en 2026 exactamente lo que dijo que haría: usar el ABO para comprar, reforzar el balance y mantener el ritmo de adquisiciones. Las dos compras de abril son señal de que el capital se activa con rapidez. El rating mejora. La JGA aprueba la hoja de ruta.</p>
+    <p>El problema es que el mercado no está premiando la ejecución. La corrección del sector IT europeo arrastra la acción, y el precio está por debajo del ABO. Esto no invalida la tesis — la invalida si los resultados de H1 2026 no confirman el crecimiento.</p>
+    <p>Hay tres preguntas que responderán si la tesis se cumple o se rompe: <strong>(1)</strong> ¿El margen EBITDA aguanta la integración de ACKstorm y SADE? <strong>(2)</strong> ¿El FCF libre empieza a crecer como porcentaje de los ingresos? <strong>(3)</strong> ¿El rating llega a grado de inversión antes de 2028? Si las tres respuestas son sí, Izertis a 8,78€ habrá sido una de las mejores oportunidades del mercado español en 2026.</p>
+  </div>
+</section>
+
+<footer>
+  <p><strong>Andrés Algora</strong> · Análisis de inversión · Junio 2026</p>
+  <p>Uso educativo. No constituye asesoramiento financiero ni recomendación de inversión. Analiza siempre los documentos originales antes de tomar cualquier decisión.</p>
+  <p style="margin-top:0.5rem">Fuentes: Informe Anual Izertis 2025 · Renta 4 · JB Capital · Alantra Equities · EthiFinance Ratings · CNMV · Investing.com · Yahoo Finance</p>
+</footer>
+
+<script>
+const G = 'rgba(0,0,0,0.06)';
+const T = '#94a3b8';
+const base = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { color: G }, ticks: { color: T, font: { size: 11 } } },
+    y: { grid: { color: G }, ticks: { color: T, font: { size: 11 } } }
+  }
+};
+
+// Performance chart
+new Chart(document.getElementById('chart-perf'), {
+  type: 'line',
+  data: {
+    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+    datasets: [
+      { label: 'IZER', data: [0, -5, -10, -12, -15, -15], borderColor: '#d97706', backgroundColor: 'rgba(217,119,6,0.06)', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#d97706', fill: true },
+      { label: 'IBEX 35', data: [0, 2, 3, 2, 0, -1], borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.06)', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#3b82f6', fill: true }
+    ]
+  },
+  options: { ...base,
+    plugins: { legend: { display: true, labels: { color: T, font: { size: 11 }, boxWidth: 10 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw + '%' } }
+    },
+    scales: { x: { grid: { color: G }, ticks: { color: T, font: { size: 11 } } }, y: { grid: { color: G }, ticks: { color: T, font: { size: 11 }, callback: v => v + '%' } } }
+  }
+});
+
+// M&A chart
+new Chart(document.getElementById('chart-ma'), {
+  type: 'bar',
+  data: {
+    labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026'],
+    datasets: [
+      { type: 'bar', label: 'Anuales', data: [2, 3, 3, 4, 9, 10, 6, 2], backgroundColor: 'rgba(124,58,237,0.3)', borderColor: '#7c3aed', borderWidth: 1, borderRadius: 4 },
+      { type: 'line', label: 'Acumulado', data: [2, 5, 8, 12, 21, 31, 37, 39], borderColor: '#059669', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#059669', yAxisID: 'y2' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true, labels: { color: T, font: { size: 11 }, boxWidth: 10 } } },
+    scales: {
+      x: { grid: { color: G }, ticks: { color: T, font: { size: 11 } } },
+      y: { grid: { color: G }, ticks: { color: T, font: { size: 11 } }, position: 'left' },
+      y2: { ticks: { color: '#059669', font: { size: 11 } }, position: 'right', grid: { display: false } }
+    }
+  }
+});
+
+// FCF chart
+new Chart(document.getElementById('chart-fcf'), {
+  type: 'bar',
+  data: {
+    labels: ['FCF potencial\n2026e', 'FCF potencial\n2027e', 'Cap. mercado\nactual'],
+    datasets: [
+      { label: 'Bajista', data: [18, 22, 307], backgroundColor: 'rgba(220,38,38,0.5)', borderRadius: 4 },
+      { label: 'Base', data: [24, 30, 307], backgroundColor: 'rgba(59,130,246,0.5)', borderRadius: 4 },
+      { label: 'Optimista', data: [30, 40, 307], backgroundColor: 'rgba(5,150,105,0.5)', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true, labels: { color: T, font: { size: 11 }, boxWidth: 10 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw + 'M€' } }
+    },
+    scales: {
+      x: { grid: { color: G }, ticks: { color: T, font: { size: 11 } } },
+      y: { grid: { color: G }, ticks: { color: T, font: { size: 11 }, callback: v => v + 'M€' } }
+    }
+  }
+});
+
+// Estimaciones chart
+new Chart(document.getElementById('chart-est'), {
+  type: 'bar',
+  data: {
+    labels: ['2025 real', '2026e', '2027e', '2028e', '2030 obj.'],
+    datasets: [
+      { type: 'bar', label: 'Ingresos (M€)', data: [166.9, 211.1, 284.3, 352.3, 500], backgroundColor: ['#d97706', 'rgba(59,130,246,0.6)', 'rgba(59,130,246,0.5)', 'rgba(59,130,246,0.4)', 'rgba(5,150,105,0.6)'], borderRadius: 4 },
+      { type: 'line', label: 'EBITDA norm. (M€)', data: [24.1, 31.1, 41.4, 51.7, 65], borderColor: '#059669', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#059669', yAxisID: 'y2' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true, labels: { color: T, font: { size: 11 }, boxWidth: 10 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw + 'M€' } }
+    },
+    scales: {
+      x: { grid: { color: G }, ticks: { color: T, font: { size: 11 } } },
+      y: { grid: { color: G }, ticks: { color: T, font: { size: 11 }, callback: v => v + 'M' }, position: 'left' },
+      y2: { ticks: { color: '#059669', font: { size: 11 }, callback: v => v + 'M' }, position: 'right', grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>
